@@ -4,14 +4,14 @@ import './globals.css';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const description =
-  'Shah Sanjida Rahman Nitu — CSE student at RUET doing machine learning research on NASA TESS and Kepler exoplanet data: clustering, anomaly detection and uncertainty estimation.';
+  'Shah Sanjida Rahman Nitu — Computer Science and Engineering student at Rajshahi University of Engineering & Technology (RUET), Bangladesh, doing machine learning research on NASA TESS and Kepler exoplanet data: clustering, anomaly detection and uncertainty estimation.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: `${profile.fullName} — ${profile.role}`,
   description,
   authors: [{ name: profile.fullName }],
-  keywords: ['machine learning', 'exoplanets', 'TESS', 'Kepler', 'anomaly detection', 'RUET', 'portfolio'],
+  keywords: ['machine learning', 'exoplanets', 'TESS', 'Kepler', 'anomaly detection', 'RUET', 'Rajshahi University of Engineering & Technology', 'portfolio'],
   openGraph: {
     type: 'website',
     title: `${profile.fullName} — ${profile.role}`,

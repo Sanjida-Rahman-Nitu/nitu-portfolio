@@ -27,7 +27,7 @@ export const profile = {
 
 export const catalogueStrip: Array<[string, string]> = [
   ['OBJECT', 'S. S. R. Nitu'],
-  ['CLASS', 'ML researcher · CSE, RUET'],
+  ['CLASS', 'ML researcher · CSE, Rajshahi University of Engineering & Technology (RUET)'],
   ['OBSERVED FROM', 'Rajshahi 24.37°N 88.60°E'],
   ['STATUS', 'Open to research & AI roles'],
 ];
@@ -39,7 +39,7 @@ export const about = {
     'Outside the lab I lead. I managed a student startup to pre-seed funding, help run two university organisations, mentor new student researchers, and have hosted more than ten professional events.',
   ],
   facts: [
-    ['Degree', 'B.Sc. in CSE, RUET'],
+    ['Degree', 'B.Sc. in Computer Science & Engineering, Rajshahi University of Engineering & Technology (RUET)'],
     ['Graduating', 'March 2027'],
     ['CGPA', '3.34 / 4.00'],
     ['Focus', 'Unsupervised learning, anomaly detection, uncertainty estimation'],
@@ -147,7 +147,7 @@ export const leadership: TimelineItem[] = [
     highlight: true,
     title: 'Project Manager & Team Leader',
     org: ['SpaceShare Solutions · student startup'],
-    text: "Led the team through refining the idea and building a scalable business model. We won pre-seed funding from RUET's University Innovation Hub Program (UIHP) under the DEIED Project.",
+    text: "Led the team through refining the idea and building a scalable business model. We won pre-seed funding from the University Innovation Hub Program (UIHP) at Rajshahi University of Engineering & Technology (RUET) under the DEIED Project.",
     posts: [{ label: 'Funding announcement', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462529923300151296/' }],
   },
   { when: 'Sep 2026 – Mar 2027', title: 'Vice President, Monitoring & Evaluation', org: ['RUET Computing Society'] },
