@@ -25,8 +25,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
   }
 
-  // Spam bots fill the hidden "company" field; pretend success and drop it.
-  if (clean(body.company, 200)) return NextResponse.json({ ok: true });
+  // Spam bots fill the hidden honeypot field; pretend success and drop it.
+  if (clean(body.hp_x7q, 200)) {
+    console.warn('contact: dropped as spam (honeypot field was filled)');
+    return NextResponse.json({ ok: true });
+  }
 
   const name = clean(body.name, 100);
   const email = clean(body.email, 200);
@@ -39,6 +42,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
   }
 
+  console.log('contact: message received');
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   if (!apiKey || !to) {
@@ -79,7 +83,9 @@ export async function POST(request: Request) {
       { status: 502 },
     );
   }
-  return NextResponse.json({ ok: true });
+  const sent = (await res.json().catch(() => ({}))) as { id?: string };
+  console.log('contact: sent via Resend, id =', sent.id ?? '(none)');
+  return NextResponse.json({ ok: true, id: sent.id });
 }
 
 /**

@@ -55,10 +55,11 @@ export default function Contact() {
             <label htmlFor="contact-message">Message</label>
             <textarea id="contact-message" name="message" required rows={5} maxLength={5000} />
           </div>
-          {/* Honeypot: hidden from people, filled in by spam bots */}
+          {/* Honeypot: hidden from people, filled in by spam bots. The name is deliberately
+              one that browser autofill never recognises (autofill fills fields like "company"). */}
           <div className="hp" aria-hidden="true">
-            <label htmlFor="contact-company">Company</label>
-            <input id="contact-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+            <label htmlFor="contact-hp">Leave this field empty</label>
+            <input id="contact-hp" name="hp_x7q" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
           </div>
           <button className="btn primary" type="submit" disabled={status.kind === 'sending'}>
             {status.kind === 'sending' ? 'Sending…' : 'Send message'}
