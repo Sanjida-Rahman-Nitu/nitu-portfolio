@@ -1,0 +1,26 @@
+{
+  "name": "nitu-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of Shah Sanjida Rahman Nitu — machine learning research on TESS and Kepler exoplanet data.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^15.5.9",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}
