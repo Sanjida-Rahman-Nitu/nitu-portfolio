@@ -4,6 +4,8 @@ Personal portfolio of **Shah Sanjida Rahman Nitu**: machine learning research on
 
 The hero shows a planet passing in front of the portrait while a live light curve records the brightness dip, the same signal the research looks for.
 
+**Live:** https://sanjida-nitu.vercel.app
+
 Built with **Next.js 15 (App Router)**, **React 19** and **TypeScript**. Hosted on **Vercel**.
 
 ---
@@ -82,3 +84,5 @@ The form sends messages to your inbox through [Resend](https://resend.com), whic
 3. Redeploy.
 
 Until these are set, the form tells visitors to use the email address shown on the page.
+
+**Checking the setup:** open `/api/contact` in a browser (for example https://sanjida-nitu.vercel.app/api/contact). It shows whether each variable reached the live site, without showing the values. If a message fails, the form shows the reason given by Resend.

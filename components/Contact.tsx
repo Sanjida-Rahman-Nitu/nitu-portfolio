@@ -20,8 +20,11 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      const json = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(json.error || 'Something went wrong. Please email me directly.');
+      const json = (await res.json().catch(() => ({}))) as { error?: string; detail?: string };
+      if (!res.ok) {
+        const msg = json.error || 'Something went wrong. Please email me directly.';
+        throw new Error(json.detail ? `${msg} (${json.detail})` : msg);
+      }
       form.reset();
       setStatus({ kind: 'sent', message: 'Thank you. Your message has been sent, and I will reply soon.' });
     } catch (err) {

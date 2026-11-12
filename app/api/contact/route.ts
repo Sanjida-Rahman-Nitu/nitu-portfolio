@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
  * Needs RESEND_API_KEY and CONTACT_TO_EMAIL (see .env.example).
  */
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -61,8 +62,37 @@ export async function POST(request: Request) {
   });
 
   if (!res.ok) {
-    console.error('Resend error', res.status, await res.text().catch(() => ''));
-    return NextResponse.json({ error: 'Your message could not be sent. Please email me directly.' }, { status: 502 });
+    const raw = await res.text().catch(() => '');
+    console.error('Resend error', res.status, raw);
+    let reason = '';
+    try {
+      reason = (JSON.parse(raw) as { message?: string }).message ?? '';
+    } catch {
+      /* not JSON */
+    }
+    return NextResponse.json(
+      {
+        error: 'Your message could not be sent. Please email me directly.',
+        // Resend's own explanation (e.g. wrong API key, or sending to an address the account does not own)
+        detail: reason ? `Email service said: ${reason}` : `Email service error ${res.status}`,
+      },
+      { status: 502 },
+    );
   }
   return NextResponse.json({ ok: true });
+}
+
+/**
+ * GET /api/contact — setup check. Open this URL in a browser to see whether the
+ * environment variables reached the deployment. It never shows the values themselves.
+ */
+export async function GET() {
+  const key = process.env.RESEND_API_KEY ?? '';
+  const to = process.env.CONTACT_TO_EMAIL ?? '';
+  return NextResponse.json({
+    RESEND_API_KEY: key ? (key.startsWith('re_') ? 'set' : 'set, but does not start with re_ (check the value)') : 'MISSING',
+    CONTACT_TO_EMAIL: to ? (EMAIL_RE.test(to) ? 'set' : 'set, but not a valid email') : 'MISSING',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'MISSING',
+    ready: Boolean(key && to),
+  });
 }
