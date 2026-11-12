@@ -144,3 +144,16 @@ footer { border-top: 1px solid var(--grid); padding: 18px 0 30px; }
 .direct a { justify-self: start; }
 .direct a.addr { border-bottom: none; color: var(--ink); }
 @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+
+/* LinkedIn proof badges beside each item */
+.proof { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.proof-link {
+  display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em;
+  color: var(--ink); border: 1px solid var(--grid); border-radius: 2px; padding: 4px 9px 4px 5px;
+  background: color-mix(in srgb, var(--sky-2) 80%, transparent);
+}
+.proof-link:hover { border-color: var(--flux); color: var(--flux); }
+.proof-in {
+  display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 2px;
+  background: #0a66c2; color: #fff; font-family: var(--font-body); font-weight: 700; font-size: 10.5px; line-height: 1;
+}

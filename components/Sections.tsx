@@ -145,15 +145,16 @@ function Timeline({ items }: { items: TimelineItem[] }) {
               <Rich value={it.org} />
             </div>
           )}
-          {(it.text || it.link) && (
-            <p>
-              {it.text}{' '}
-              {it.link && (
-                <a href={it.link.href} target="_blank" rel="noopener noreferrer">
-                  {it.link.text} ↗
+          {it.text && <p>{it.text}</p>}
+          {it.posts && (
+            <div className="proof">
+              {it.posts.map((post) => (
+                <a className="proof-link" href={post.href} target="_blank" rel="noopener noreferrer" key={post.href} title={`${post.label} on LinkedIn`}>
+                  <span className="proof-in" aria-hidden="true">in</span>
+                  {post.label} ↗
                 </a>
-              )}
-            </p>
+              ))}
+            </div>
           )}
         </li>
       ))}

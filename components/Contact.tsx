@@ -70,7 +70,6 @@ export default function Contact() {
         <div className="direct">
           <p className="mono">Or reach me directly</p>
           <a className="addr" href={`mailto:${profile.email}`}>{profile.email}</a>
-          <span className="addr">{profile.phone}</span>
           <span className="addr">{profile.location}</span>
           <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/sanjida-rahman-nitu</a>
           <a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/Sanjida-Rahman-Nitu</a>

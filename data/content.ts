@@ -12,7 +12,6 @@ export const profile = {
   fullName: 'Shah Sanjida Rahman Nitu',
   role: 'Machine Learning Researcher',
   email: 'sanjidarahmannitu24@gmail.com',
-  phone: '+880 1892-197491',
   location: 'Rajshahi, Bangladesh',
   linkedin: 'https://www.linkedin.com/in/sanjida-rahman-nitu',
   github: 'https://github.com/Sanjida-Rahman-Nitu',
@@ -138,7 +137,8 @@ export type TimelineItem = {
   org?: RichText;
   when?: string;
   text?: string;
-  link?: { text: string; href: string };
+  /** LinkedIn posts that back up this item, shown as "LinkedIn post" badges. */
+  posts?: Array<{ label: string; href: string }>;
   highlight?: boolean;
 };
 
@@ -148,7 +148,7 @@ export const leadership: TimelineItem[] = [
     title: 'Project Manager & Team Leader',
     org: ['SpaceShare Solutions · student startup'],
     text: "Led the team through refining the idea and building a scalable business model. We won pre-seed funding from RUET's University Innovation Hub Program (UIHP) under the DEIED Project.",
-    link: { text: 'Announcement', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462529923300151296/' },
+    posts: [{ label: 'Funding announcement', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462529923300151296/' }],
   },
   { when: 'Sep 2026 – Mar 2027', title: 'Vice President, Monitoring & Evaluation', org: ['RUET Computing Society'] },
   {
@@ -160,7 +160,13 @@ export const leadership: TimelineItem[] = [
 ];
 
 export const milestones: TimelineItem[] = [
-  { highlight: true, when: 'UIHP · RUET', title: 'Pre-seed funding winner', org: ['SpaceShare Solutions'] },
+  {
+    highlight: true,
+    when: 'UIHP · RUET',
+    title: 'Pre-seed funding winner',
+    org: ['SpaceShare Solutions'],
+    posts: [{ label: 'Funding announcement', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462529923300151296/' }],
+  },
   { highlight: true, when: '2025', title: 'Accomplished Competitor', org: ['University Physics Competition'] },
   {
     when: '2026',
@@ -172,19 +178,19 @@ export const milestones: TimelineItem[] = [
     title: 'AI/ML Training Program',
     org: ['Phitron'],
     text: 'Completed Python for ML, Machine Learning and Deep Learning; selected for a three-month thesis track on NLP and LLMs.',
-    link: { text: 'Announcement', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462883830224457728/' },
+    posts: [{ label: 'Selection post', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462883830224457728/' }],
   },
   {
     title: 'Anchor, National Android Development Bootcamp',
     org: ['Sponsored by bdapps with MIAKI'],
-    link: { text: 'Event post', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462881564134105089/' },
+    posts: [{ label: 'Event post', href: 'https://www.linkedin.com/feed/update/urn:li:activity:7462881564134105089/' }],
   },
   {
     title: 'Volunteer, WordCamp Rajshahi 2026',
-    org: [
-      { text: 'Contributor Day ↗', href: 'https://lnkd.in/p/guPiG_dJ' },
-      ' · ',
-      { text: 'Conference Day ↗', href: 'https://lnkd.in/p/gZ6CcyKE' },
+    org: ['WordPress and open-source community event'],
+    posts: [
+      { label: 'Contributor Day', href: 'https://lnkd.in/p/guPiG_dJ' },
+      { label: 'Conference Day', href: 'https://lnkd.in/p/gZ6CcyKE' },
     ],
   },
   { title: 'Host of 10+ professional events', org: ['Technical programmes, club events, orientations, corporate events'] },
