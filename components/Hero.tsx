@@ -13,6 +13,7 @@ export default function Hero() {
   const planetRef = useRef<HTMLCanvasElement>(null);
   const curveRef = useRef<HTMLCanvasElement>(null);
   const readoutRef = useRef<HTMLSpanElement>(null);
+  const countRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const planet = planetRef.current;
@@ -33,6 +34,9 @@ export default function Hero() {
     let hoverX: number | null = null;
     let last = t0;
     let raf = 0;
+    // Count transits as they happen (the planet entering the disc), like a tiny survey.
+    let transits = 0;
+    let inTransit = orbit(t0 + shift).flux < 1;
 
     const render = (now: number) => {
       drawPlanet(planet, reduce ? PERIOD * 0.25 : now + shift, palette);
@@ -62,6 +66,12 @@ export default function Hero() {
           last += STEP;
           buf.push(sample(last + shift));
           if (buf.length > N) buf.shift();
+          const blocked = orbit(last + shift).flux < 1;
+          if (blocked && !inTransit) {
+            transits += 1;
+            if (countRef.current) countRef.current.textContent = String(transits);
+          }
+          inTransit = blocked;
         }
         render(now);
         raf = requestAnimationFrame(frame);
@@ -98,6 +108,12 @@ export default function Hero() {
             <a className="btn" href={profile.cv} target="_blank" rel="noopener noreferrer">Download CV</a>
             <a className="btn" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
             <a className="btn" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            {profile.scholar && (
+              <a className="btn" href={profile.scholar} target="_blank" rel="noopener noreferrer">Google Scholar ↗</a>
+            )}
+            {profile.orcid && (
+              <a className="btn" href={profile.orcid} target="_blank" rel="noopener noreferrer">ORCID ↗</a>
+            )}
           </div>
         </div>
 
@@ -115,6 +131,9 @@ export default function Hero() {
         <div className="lc-head mono">
           <span>
             <span className="live">● LIVE</span> light curve of the target above
+          </span>
+          <span>
+            transits detected this visit: <span ref={countRef} className="ink">0</span>
           </span>
           <span ref={readoutRef}>relative flux 1.0000</span>
         </div>

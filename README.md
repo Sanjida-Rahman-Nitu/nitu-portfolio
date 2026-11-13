@@ -22,6 +22,7 @@ nitu-portfolio/
 │   ├── sitemap.ts          # /sitemap.xml
 │   └── robots.ts           # /robots.txt
 ├── components/
+│   ├── Nav.tsx             # sticky section navigation
 │   ├── Hero.tsx            # name, intro, portrait + transiting planet, live light curve
 │   ├── Starfield.tsx       # twinkling background
 │   ├── Sections.tsx        # About, Research, Data, Skills, Leadership, Footer
@@ -47,6 +48,25 @@ Almost every change happens in **`data/content.ts`**:
 - New skill → edit `skills`
 
 To change the photo or CV, replace the file in `public/` and keep the same name.
+
+### Adding proof to a research project
+Each item in `research` can take optional `links` and a `figure`:
+
+```ts
+links: [
+  { label: 'Code', href: 'https://github.com/Sanjida-Rahman-Nitu/your-repo' },
+  { label: 'Notebook', href: 'https://colab.research.google.com/...' },
+],
+figure: { src: '/research/clusters.png', alt: 'Light curve clusters', caption: 'Clusters of TESS Sector 1 light curves' },
+```
+Put figure images in `public/research/`.
+
+### Notes (short write-ups)
+Add to `notes` in `data/content.ts`. Each note gets its own page at `/notes/<slug>`.
+Notes with `draft: true` are hidden. Set `draft: false` to publish; the **Notes** section and nav link appear automatically.
+
+### Google Scholar and ORCID
+Fill in `profile.scholar` and `profile.orcid`. Empty values are hidden.
 
 ## Run it on your computer
 

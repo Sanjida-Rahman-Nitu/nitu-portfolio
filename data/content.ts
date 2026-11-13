@@ -15,6 +15,10 @@ export const profile = {
   location: 'Rajshahi, Bangladesh',
   linkedin: 'https://www.linkedin.com/in/sanjida-rahman-nitu',
   github: 'https://github.com/Sanjida-Rahman-Nitu',
+  /** Fill these in when you have them; empty values are hidden on the site. */
+  scholar: '', // e.g. https://scholar.google.com/citations?user=XXXX
+  orcid: '', // e.g. https://orcid.org/0000-0000-0000-0000
+  sourceCode: 'https://github.com/Sanjida-Rahman-Nitu/nitu-portfolio',
   photo: '/photo.jpg',
   cv: '/Shah_Sanjida_Rahman_Nitu_CV.pdf',
   kicker: 'Machine learning × exoplanets',
@@ -53,6 +57,10 @@ export type ResearchProject = {
   summary: string;
   meta: string[];
   status: string;
+  /** Proof links shown under the project, e.g. { label: 'Code', href: 'https://github.com/...' }. */
+  links?: Array<{ label: string; href: string }>;
+  /** Optional figure from your own work (put the image in public/research/). */
+  figure?: { src: string; alt: string; caption?: string };
 };
 
 export const research: ResearchProject[] = [
@@ -195,3 +203,35 @@ export const milestones: TimelineItem[] = [
   },
   { title: 'Host of 10+ professional events', org: ['Technical programmes, club events, orientations, corporate events'] },
 ];
+
+/* ---------- NOTES (short write-ups) ----------
+ * Each note gets its own page at /notes/<slug>.
+ * Notes with draft: true are NOT shown on the site. Set draft: false to publish.
+ * The Notes section on the homepage appears automatically once one note is published.
+ */
+export type Note = {
+  slug: string;
+  title: string;
+  date: string; // e.g. 'November 2026'
+  summary: string;
+  body: string[]; // one string per paragraph
+  draft?: boolean;
+};
+
+export const notes: Note[] = [
+  {
+    slug: 'why-gaps-matter-in-tess-light-curves',
+    title: 'Why gaps matter in TESS light curves',
+    date: 'November 2026',
+    summary: 'A short explainer on where the gaps in TESS data come from, and why careless preprocessing can erase the very transits we are looking for.',
+    draft: true, // DRAFT: edit in your own words, then set to false to publish
+    body: [
+      'TESS watches each patch of sky for about 27 days, called a sector. Partway through every sector the spacecraft pauses to send its data back to Earth, which leaves a gap of roughly a day in each light curve. Smaller gaps also appear where measurements are flagged as unreliable.',
+      'Many standard preprocessing steps were not designed with gaps in mind. Smoothing filters and detrending methods can behave badly at the edges of a gap, and a transit that falls close to one can be bent, shrunk or removed entirely.',
+      'For unsupervised methods this matters even more. A clustering or anomaly-detection model has no labels to correct it, so if preprocessing distorts the signal, the model learns the distortion instead of the astrophysics.',
+      'That is the motivation for my gap-aware, transit-preserving preprocessing framework: treat the gaps explicitly, and check that known transits survive every step.',
+    ],
+  },
+];
+
+export const publishedNotes = notes.filter((n) => !n.draft);

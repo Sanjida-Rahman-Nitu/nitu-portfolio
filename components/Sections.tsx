@@ -5,11 +5,13 @@ import {
   leadership,
   milestones,
   profile,
+  publishedNotes,
   research,
   researchNote,
   skills,
   type TimelineItem,
 } from '@/data/content';
+import Image from 'next/image';
 import Rich from './Rich';
 
 function SectionHead({ label, title }: { label: string; title: string[] }) {
@@ -76,6 +78,21 @@ export function Research() {
             <div>
               <h3>{r.title}</h3>
               <p>{r.summary}</p>
+              {r.figure && (
+                <figure className="obs-figure">
+                  <Image src={r.figure.src} alt={r.figure.alt} width={1200} height={600} sizes="(max-width: 860px) 100vw, 640px" />
+                  {r.figure.caption && <figcaption className="mono">{r.figure.caption}</figcaption>}
+                </figure>
+              )}
+              {r.links && r.links.length > 0 && (
+                <div className="obs-links">
+                  {r.links.map((l) => (
+                    <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer">
+                      [{l.label}]
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="meta">
               <span className="chip">{r.status}</span>
@@ -179,11 +196,55 @@ export function Leadership() {
   );
 }
 
-export function Footer() {
+export function Notes() {
+  if (!publishedNotes.length) return null;
   return (
-    <footer className="wrap mono">
-      The light curve at the top is simulated from the animation. Real TESS dips are usually much smaller. · ©{' '}
-      {new Date().getFullYear()} {profile.fullName}
+    <section id="notes">
+      <SectionHead label="Notes" title={['Field notes']} />
+      <ul className="notes">
+        {publishedNotes.map((n) => (
+          <li key={n.slug}>
+            <a href={`/notes/${n.slug}`}>
+              <span className="note-date mono">{n.date}</span>
+              <span className="note-title">{n.title}</span>
+              <span className="note-summary">{n.summary}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export function Footer() {
+  const links = [
+    { label: 'LinkedIn', href: profile.linkedin },
+    { label: 'GitHub', href: profile.github },
+    ...(profile.scholar ? [{ label: 'Google Scholar', href: profile.scholar }] : []),
+    ...(profile.orcid ? [{ label: 'ORCID', href: profile.orcid }] : []),
+    { label: 'CV', href: profile.cv },
+  ];
+  return (
+    <footer className="wrap mono footer">
+      <div className="footer-row">
+        <span>© {new Date().getFullYear()} {profile.fullName}</span>
+        <span className="footer-links">
+          {links.map((l) => (
+            <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer">
+              {l.label}
+            </a>
+          ))}
+        </span>
+      </div>
+      <div className="footer-row dim">
+        <span>
+          Built with Next.js and deployed on Vercel ·{' '}
+          <a href={profile.sourceCode} target="_blank" rel="noopener noreferrer">
+            source code
+          </a>
+        </span>
+        <span>The light curve above is simulated from the animation. Real TESS dips are usually much smaller.</span>
+      </div>
     </footer>
   );
 }
