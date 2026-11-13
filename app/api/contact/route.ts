@@ -13,6 +13,49 @@ function clean(value: unknown, max: number): string {
   return typeof value === 'string' ? value.trim().slice(0, max) : '';
 }
 
+/* ---------- spam protection ----------
+ * 1. Honeypot: a hidden field people never see; bots fill it.
+ * 2. Time trap: the form reports how long it was open; bots submit within a second or two.
+ * 3. Origin check: the request must come from this website, not a script posting directly.
+ * 4. Link limit: spam is usually stuffed with links.
+ * 5. Rate limit: at most a few messages per visitor in a short time (best effort; resets on redeploy).
+ * Spam is dropped silently (the bot sees "success") so it gets no hint to adapt.
+ */
+const MIN_FILL_MS = 3000;
+const MAX_LINKS = 2;
+const RATE_LIMIT = 3;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const recent = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const hits = (recent.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  hits.push(now);
+  recent.set(ip, hits);
+  if (recent.size > 5000) recent.clear(); // keep memory bounded
+  return hits.length > RATE_LIMIT;
+}
+
+function countLinks(s: string): number {
+  return (s.match(/https?:\/\/|www\./gi) ?? []).length;
+}
+
+function sameOrigin(request: Request): boolean {
+  const origin = request.headers.get('origin');
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
+function dropSpam(reason: string) {
+  console.warn(`contact: dropped as spam (${reason})`);
+  return NextResponse.json({ ok: true });
+}
+
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 }
@@ -25,15 +68,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
   }
 
-  // Spam bots fill the hidden honeypot field; pretend success and drop it.
-  if (clean(body.hp_x7q, 200)) {
-    console.warn('contact: dropped as spam (honeypot field was filled)');
-    return NextResponse.json({ ok: true });
+  if (clean(body.hp_x7q, 200)) return dropSpam('honeypot field was filled');
+  if (!sameOrigin(request)) return dropSpam('not sent from this website');
+  const elapsed = Number(body.t);
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) return dropSpam('form submitted too fast');
+
+  const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown';
+  if (rateLimited(ip)) {
+    return NextResponse.json({ error: 'Too many messages in a short time. Please try again later.' }, { status: 429 });
   }
 
   const name = clean(body.name, 100);
   const email = clean(body.email, 200);
   const message = clean(body.message, 5000);
+
+  if (countLinks(name) > 0) return dropSpam('link in name');
+  if (countLinks(message) > MAX_LINKS) {
+    return NextResponse.json({ error: `Please include at most ${MAX_LINKS} links in your message.` }, { status: 400 });
+  }
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'Please fill in your name, email and message.' }, { status: 400 });
@@ -59,7 +111,7 @@ export async function POST(request: Request) {
       from: 'Portfolio <onboarding@resend.dev>',
       to: [to],
       reply_to: email,
-      subject: `Portfolio message from ${name}`,
+      subject: `[Portfolio] Message from ${name}`,
       text: `From: ${name} <${email}>\n\n${message}`,
       html: `<p><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p><p style="white-space:pre-wrap">${escapeHtml(message)}</p>`,
     }),

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { profile } from '@/data/content';
 
 type Status = { kind: 'idle' | 'sending' | 'sent' | 'error'; message?: string };
@@ -8,11 +8,20 @@ type Status = { kind: 'idle' | 'sending' | 'sent' | 'error'; message?: string };
 /** Contact section: a form that posts to /api/contact, plus direct contact details. */
 export default function Contact() {
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
+  const openedAt = useRef<number>(0);
+  // The email address is only written into the page after it loads in a real browser,
+  // so simple scraper bots that read the raw HTML never see it.
+  const [showEmail, setShowEmail] = useState(false);
+
+  useEffect(() => {
+    openedAt.current = Date.now();
+    setShowEmail(true);
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const data = { ...Object.fromEntries(new FormData(form).entries()), t: openedAt.current ? Date.now() - openedAt.current : 0 };
     setStatus({ kind: 'sending' });
     try {
       const res = await fetch('/api/contact', {
@@ -73,7 +82,11 @@ export default function Contact() {
 
         <div className="direct">
           <p className="mono">Or reach me directly</p>
-          <a className="addr" href={`mailto:${profile.email}`}>{profile.email}</a>
+          {showEmail ? (
+            <a className="addr" href={`mailto:${profile.email}`}>{profile.email}</a>
+          ) : (
+            <span className="addr">{profile.email.replace('@', ' [at] ').replace(/\./g, ' [dot] ')}</span>
+          )}
           <span className="addr">{profile.location}</span>
           <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">linkedin.com/in/sanjida-rahman-nitu</a>
           <a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/Sanjida-Rahman-Nitu</a>
